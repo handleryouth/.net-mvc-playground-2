@@ -1,0 +1,37 @@
+﻿@using contactForm.Helper
+@model contactForm.Models.CommonModel.RegisterModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+
+<div>
+    @using (Html.BeginForm())
+    {
+           @Html.InputWithLabel(m => m.FirstName)
+
+            @Html.InputWithLabel(m => m.LastName)
+
+            @Html.InputWithLabel(m => m.EmailAddress)
+
+    <div>
+        @Html.CheckboxWithLabel(m => m.QueryType,"General Enquiry" , new Dictionary<string, string>()
+   {
+       {"value", "" }
+   })
+
+        @Html.CheckboxWithLabel(m => m.QueryType, "Support Request", new Dictionary<string, string>()
+   {
+       {"value", "" }
+   })
+    </div>
+
+            @Html.TextAreaWithLabel(m => m.Message)
+
+
+    }
+
+</div>
+
+
