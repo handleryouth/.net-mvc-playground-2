@@ -1,0 +1,43 @@
+# FROM mcr.microsoft.com/dotnet/runtime:7.0-nanoserver-1809 AS base
+# WORKDIR /app
+
+# FROM mcr.microsoft.com/dotnet/sdk:7.0-nanoserver-1809 AS build
+# ARG configuration=Release
+# WORKDIR /src
+# COPY ["contactForm.csproj", "./"]
+# RUN dotnet restore "contactForm.csproj"
+# COPY . .
+# WORKDIR "/src/."
+# RUN dotnet build "contactForm.csproj" -c $configuration -o /app/build
+
+# FROM build AS publish
+# ARG configuration=Release
+# RUN dotnet publish "contactForm.csproj" -c $configuration -o /app/publish /p:UseAppHost=false
+
+# FROM base AS final
+# WORKDIR /app
+# COPY --from=publish /app/publish .
+# ENTRYPOINT ["dotnet", "contactForm.dll"]
+
+
+# Use the official .NET SDK image for .NET 7 as a build stage
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
+WORKDIR /app
+
+# Copy csproj 
+# dotnet restore: Restores the dependencies and tools of a project.
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copy everything else and build
+COPY . ./
+# dotnet publish: compiles the application, reads through its dependencies specified in the 
+# project file, and publishes the resulting set of files to a directory. T
+RUN dotnet publish -c Release -o out
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:7.0
+WORKDIR /app
+COPY --from=build-env /app/out .
+EXPOSE 8080:80
+ENTRYPOINT ["dotnet", "contactForm.dll"]
