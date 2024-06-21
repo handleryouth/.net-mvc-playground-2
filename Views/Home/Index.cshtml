@@ -1,35 +1,44 @@
 ﻿@using contactForm.Helper
+@using contactForm.Models.CommonModel
+@using contactForm.Enum;
 @model contactForm.Models.CommonModel.RegisterModel
 
 @{
     ViewData["Title"] = "Home Page";
+
+    List<RadioPropertiesModel<QueryType>> queryTypeList = new List<RadioPropertiesModel<QueryType>>() {
+               new RadioPropertiesModel<QueryType>("General Enquiry", QueryType.GeneralEnquiry),
+               new RadioPropertiesModel<QueryType>("Support Request", QueryType.SupportRequest),
+    };
 }
 
-
 <div>
-    @using (Html.BeginForm())
+    @using (Html.BeginForm("Index", "Home", FormMethod.Post))
     {
-           @Html.InputWithLabel(m => m.FirstName)
+        @Html.AntiForgeryToken()
 
-            @Html.InputWithLabel(m => m.LastName)
+        @Html.InputWithLabel(m => m.FirstName)
+        @Html.CustomErrorMessage(m => m.FirstName)
 
-            @Html.InputWithLabel(m => m.EmailAddress)
+        @Html.InputWithLabel(m => m.LastName)
+        @Html.CustomErrorMessage(m => m.LastName)
+
+        @Html.InputWithLabel(m => m.EmailAddress)
+        @Html.CustomErrorMessage(m => m.EmailAddress)
 
     <div>
-        @Html.CheckboxWithLabel(m => m.QueryType,"General Enquiry" , new Dictionary<string, string>()
-   {
-       {"value", "" }
-   })
-
-        @Html.CheckboxWithLabel(m => m.QueryType, "Support Request", new Dictionary<string, string>()
-   {
-       {"value", "" }
-   })
+        @Html.RadioBoxWithLabel(m => m.QueryType, queryTypeList, radioButtonContainerClass: "px-4 py-2 border rounded")
+        @Html.CustomErrorMessage(m => m.QueryType)
     </div>
 
-            @Html.TextAreaWithLabel(m => m.Message)
+        @Html.TextAreaWithLabel(m => m.Message)
+        @Html.CustomErrorMessage(m => m.Message)
 
-
+        @Html.Button("Submit", new Dictionary<string, string>()
+   {
+       {"type", "submit" },
+       {"class", "btn-success w-100 my-4" }
+   })
     }
 
 </div>

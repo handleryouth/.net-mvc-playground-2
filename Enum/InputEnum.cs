@@ -1,4 +1,5 @@
 ﻿
+
 public enum InputType
 {
     file, text, checkbox, radiobox
