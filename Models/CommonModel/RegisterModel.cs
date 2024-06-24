@@ -28,5 +28,7 @@ namespace contactForm.Models.CommonModel
         [DisplayName("Message")]
         public string Message { get; set; }
 	}
+
+
 }
 

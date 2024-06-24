@@ -1,10 +1,19 @@
 ﻿using contactForm.Models.CommonModel;
+using contactForm.Services;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace contactForm.Controllers;
 
 public class HomeController : Controller
 {
+
+    private readonly IRegisterServices _registerServices;
+    public HomeController(IRegisterServices registerServices)
+    {
+        _registerServices = registerServices;
+    }
+
     public IActionResult Index()
     {
         var initialModelValue = new RegisterModel()
@@ -16,14 +25,15 @@ public class HomeController : Controller
 
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult Index(RegisterModel model)
+    // [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Index(RegisterModel model)
     {
         if (!ModelState.IsValid)
         {
             return View(model);
         }
-        return Content("success");
+        await _registerServices.Create(model);
+        return Ok(new { message = "Test" });
 
     }
 
